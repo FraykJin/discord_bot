@@ -3,10 +3,11 @@ import random
 import requests
 import pprint
 from datetime import datetime
+import os
 
 pp = pprint.PrettyPrinter()
 bot = commands.Bot(command_prefix='#', help_command=None)
-api_key = "84e2686ef7073bbbcaf51ecdf230cef6"
+api_key = os.environ['API_KEY']
 
 
 #Nombre aleatoire entre 1 et 100
@@ -85,4 +86,4 @@ async def quit(ctx):
     await ctx.voice_client.disconnect()
 
 
-bot.run('ODA2MTYzODkwMjc3OTc0MDM4.YBlcoQ.DXofT0OlyBSqUQYA-l3Jk3ozlxs')
+bot.run(os.environ['TOKEN'])
