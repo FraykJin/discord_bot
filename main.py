@@ -4,7 +4,7 @@ import requests
 import pprint
 from datetime import datetime
 import os
-
+import re
 
 pp = pprint.PrettyPrinter()
 bot = commands.Bot(command_prefix='#', help_command=None)
@@ -53,10 +53,11 @@ async def meteo(ctx, city):
 #mute une personne
 @bot.command()
 async def mute(ctx, user_id):
-    print(user_id)
+    id = user_id[3:]
+    length = len(id) - 1
+    id_member = int(id[:length])
+
     if ctx.author.guild_permissions.mute_members:
-        if len(user_id) == 22:
-            id_member = int(user_id[3:21])
             user = ctx.guild.get_member(id_member)
             print(type(user))
             await user.edit(mute=True)
@@ -64,13 +65,14 @@ async def mute(ctx, user_id):
 #unmute
 @bot.command()
 async def unmute(ctx, user_id):
+    id = user_id[3:]
+    length = len(id) - 1
+    id_member = int(id[:length])
     if ctx.author.guild_permissions.mute_members:
-        if len(user_id) == 22:
-            id_member = int(user_id[3:21])
-            print(id_member)
-            user = ctx.guild.get_member(id_member)
-            print(user)
-            await user.edit(mute=False)
+        print(id_member)
+        user = ctx.guild.get_member(id_member)
+        print(user)
+        await user.edit(mute=False)
 
 #Mute everyone on the bot channel
 @bot.command()
