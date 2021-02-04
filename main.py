@@ -5,6 +5,7 @@ import pprint
 from datetime import datetime
 import os
 
+
 pp = pprint.PrettyPrinter()
 bot = commands.Bot(command_prefix='#', help_command=None)
 api_key = os.environ['API_KEY']
@@ -49,26 +50,49 @@ async def meteo(ctx, city):
 
         await ctx.send(infos)
 
+
+#Mute everyone on the bot channel
 @bot.command()
-async def help(ctx):
-    infos = "```Documentation Frayk BoT\n\n" \
-            "#rand\n" \
-            " .renvoyer un nombre aleatoire entre 1 et 100\n"\
-            "-------------------------------------------\n" \
-            "#quote\n" \
-            " .afficher une citation inspirante en anglais\n" \
-            "-------------------------------------------\n" \
-            "#meteo <nom de la ville>\n" \
-            " .fournir une météo détaillée e.g. #meteo paris\n" \
-            "-------------------------------------------\n" \
-            "#join #quit\n" \
-            " .connecter le bot au salon vocal / deconnecter le bot du salon vocal\n" \
-            "-------------------------------------------\n"\
-            "#help\n" \
-            " .afficher la documentation\n```"
+async def muteAll(ctx, *args):
+    if ctx.author.guild_permissions.mute_members:
+        #Liste des membres pris en argument qui seront pas mute
+        member_tab = []
+        for member_id in args:
+            if len(member_id) == 22:
+                id_member = int(member_id[3:21])
+                member = ctx.guild.get_member(id_member)
+                member_tab.append(member)
 
-    await ctx.send(infos)
+        members_current_channel = ctx.author.voice.channel.members
+        for member in members_current_channel:
+            if member not in member_tab:
+                await member.edit(mute=True)
+    else:
+        #Ejecter du salon vocal
+        await ctx.author.edit(voice_channel=None)
 
+
+#Unmute everyone on the channel
+@bot.command()
+async def unmuteAll(ctx, *args):
+    if ctx.author.guild_permissions.mute_members:
+        member_tab = []
+        for member_id in args:
+            if len(member_id) == 22:
+                id_member = int(member_id[3:21])
+                member = ctx.guild.get_member(id_member)
+                member_tab.append(member)
+
+        members_current_channel = ctx.author.voice.channel.members
+        # ajoute l'utilisateur dans les membres a mute
+        # members_current_channel.append(ctx.author)
+        for member in members_current_channel:
+            if member not in member_tab:
+                await member.edit(mute=False)
+    else:
+        ctx.send(f'{ctx.author.name} est un suceur.')
+
+#-----------------------------------------------------------------------------------------------------------------
 #Connect/Disconnect
 # Rejoindre un salon vocal
 @bot.command()
@@ -85,5 +109,32 @@ async def join(ctx):
 async def quit(ctx):
     await ctx.voice_client.disconnect()
 
+#---------------------------------------------------------------------------------------------------------------------
+#Affiche la documentation
+@bot.command()
+async def help(ctx):
+    infos = "```Documentation Frayk BoT\n\n" \
+            "#rand\n" \
+            " .renvoyer un nombre aleatoire entre 1 et 100\n"\
+            "-------------------------------------------\n" \
+            "#quote\n" \
+            " .afficher une citation inspirante en anglais\n" \
+            "-------------------------------------------\n" \
+            "#meteo <nom de la ville>\n" \
+            " .fournir une météo détaillée e.g. #meteo paris\n" \
+            "-------------------------------------------\n" \
+            "#join #quit\n" \
+            " .connecter le bot au salon vocal / deconnecter le bot du salon vocal\n" \
+            "-------------------------------------------\n" \
+            "#muteAll #unmuteAll e.g #muteAll <optional: @username>\n" \
+            " .attention ces commandes ne sont pas autorisees aux personnes n'ayant pas les permissions\n" \
+            " .mute toutes les personnes du salon sauf l'appelant\n" \
+            " e.g #muteAll @Frayk @Skulld\n" \
+            "  .mute tout le monde sauf l'appelant, frayk et skulld\n" \
+            "-------------------------------------------\n" \
+            "#help\n" \
+            " .afficher la documentation\n```"
+
+    await ctx.send(infos)
 
 bot.run(os.environ['TOKEN'])
