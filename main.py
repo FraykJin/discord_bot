@@ -50,6 +50,25 @@ async def meteo(ctx, city):
 
         await ctx.send(infos)
 
+#mute une personne
+@bot.command()
+async def mute(ctx, user_id):
+    if ctx.author.guild_permissions.mute_members:
+        if len(user_id) == 22:
+            id_member = int(user_id[3:21])
+            user = ctx.guild.get_member(id_member)
+            print(type(user))
+            await user.edit(mute=True)
+
+#unmute
+@bot.command()
+async def unmute(ctx, user_id):
+    if ctx.author.guild_permissions.mute_members:
+        if len(user_id) == 22:
+            id_member = int(user_id[3:21])
+            user = ctx.guild.get_member(id_member)
+            print(type(user))
+            await user.edit(mute=False)
 
 #Mute everyone on the bot channel
 @bot.command()
@@ -125,6 +144,9 @@ async def help(ctx):
             "-------------------------------------------\n" \
             "#join #quit\n" \
             " .connecter le bot au salon vocal / deconnecter le bot du salon vocal\n" \
+            "-------------------------------------------\n" \
+            "#mute #unmute <@username>\n" \
+            " .mute une personne e.g #mute @Frayk (meme fonctionnement pour #unmute)\n" \
             "-------------------------------------------\n" \
             "#muteAll #unmuteAll e.g #muteAll <optional: @username>\n" \
             " .attention ces commandes ne sont pas autorisees aux personnes n'ayant pas les permissions\n" \
