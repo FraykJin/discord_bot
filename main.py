@@ -53,6 +53,7 @@ async def meteo(ctx, city):
 #mute une personne
 @bot.command()
 async def mute(ctx, user_id):
+    print(user_id)
     if ctx.author.guild_permissions.mute_members:
         if len(user_id) == 22:
             id_member = int(user_id[3:21])
@@ -66,8 +67,9 @@ async def unmute(ctx, user_id):
     if ctx.author.guild_permissions.mute_members:
         if len(user_id) == 22:
             id_member = int(user_id[3:21])
+            print(id_member)
             user = ctx.guild.get_member(id_member)
-            print(type(user))
+            print(user)
             await user.edit(mute=False)
 
 #Mute everyone on the bot channel
@@ -109,7 +111,7 @@ async def unmuteAll(ctx, *args):
             if member not in member_tab:
                 await member.edit(mute=False)
     else:
-        ctx.send(f'{ctx.author.name} est un suceur.')
+        await ctx.author.edit(voice_channel=None)
 
 #-----------------------------------------------------------------------------------------------------------------
 #Connect/Disconnect
