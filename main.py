@@ -70,19 +70,19 @@ async def unmute(ctx, user_id):
 @bot.command()
 async def muteAll(ctx, *args):
     if ctx.author.guild_permissions.mute_members:
-        member_tab = []
-        for user_id in args:
-            id_member = int(user_id[3:len(user_id) - 1])
-            member = ctx.guild.get_member(id_member)
-            member_tab.append(member)
-        member_tab.append(ctx.author)
-        print(member_tab)
+        # member_tab = []
+        # for user_id in args:
+        #     id_member = int(user_id[3:len(user_id) - 1])
+        #     member = ctx.guild.get_member(id_member)
+        #     member_tab.append(member)
+        # member_tab.append(ctx.author)
+
+        #Supprimer dans la liste le membre ayant le meme id que dans arg
+        print(member_tab, 'member_tab')
         members_current_channel = ctx.author.voice.channel.members
         for member in members_current_channel:
-            if member not in member_tab:
-                await member.edit(mute=True)
-
-        print(members_current_channel)
+            await member.edit(mute=True)
+        print(members_current_channel, 'member_channel')
     else:
         #Ejecter du salon vocal
         await ctx.author.edit(voice_channel=None)
@@ -92,19 +92,18 @@ async def muteAll(ctx, *args):
 @bot.command()
 async def unmuteAll(ctx, *args):
     if ctx.author.guild_permissions.mute_members:
-        #Membre a ne pas mute
-        member_tab = []
-        for user_id in args:
-            id_member = int(user_id[3:len(user_id) - 1])
-            member = ctx.guild.get_member(id_member)
-            member_tab.append(member)
+        # #Membre a ne pas mute
+        # member_tab = []
+        # for user_id in args:
+        #     id_member = int(user_id[3:len(user_id) - 1])
+        #     member = ctx.guild.get_member(id_member)
+        #     member_tab.append(member)
 
         members_current_channel = ctx.author.voice.channel.members
         # ajoute l'utilisateur dans les membres a mute
         # members_current_channel.append(ctx.author)
         for member in members_current_channel:
-            if member not in member_tab:
-                await member.edit(mute=False)
+            await member.edit(mute=False)
     else:
         await ctx.author.edit(voice_channel=None)
 
