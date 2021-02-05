@@ -76,10 +76,13 @@ async def muteAll(ctx, *args):
             member = ctx.guild.get_member(id_member)
             member_tab.append(member)
         member_tab.append(ctx.author)
+        print(member_tab)
         members_current_channel = ctx.author.voice.channel.members
         for member in members_current_channel:
             if member not in member_tab:
-                await member.edit(mute=False)
+                await member.edit(mute=True)
+
+        print(members_current_channel)
     else:
         #Ejecter du salon vocal
         await ctx.author.edit(voice_channel=None)
