@@ -53,43 +53,33 @@ async def meteo(ctx, city):
 #mute une personne
 @bot.command()
 async def mute(ctx, user_id):
-    id = user_id[3:]
-    length = len(id) - 1
-    id_member = int(id[:length])
-
+    id_member = int(user_id[3:len(user_id)-1])
     if ctx.author.guild_permissions.mute_members:
             user = ctx.guild.get_member(id_member)
-            print(type(user))
             await user.edit(mute=True)
 
 #unmute
 @bot.command()
 async def unmute(ctx, user_id):
-    id = user_id[3:]
-    length = len(id) - 1
-    id_member = int(id[:length])
+    id_member = int(user_id[3:len(user_id)-1])
     if ctx.author.guild_permissions.mute_members:
-        print(id_member)
         user = ctx.guild.get_member(id_member)
-        print(user)
         await user.edit(mute=False)
 
 #Mute everyone on the bot channel
 @bot.command()
 async def muteAll(ctx, *args):
     if ctx.author.guild_permissions.mute_members:
-        #Liste des membres pris en argument qui seront pas mute
         member_tab = []
-        for member_id in args:
-            if len(member_id) == 22:
-                id_member = int(member_id[3:21])
-                member = ctx.guild.get_member(id_member)
-                member_tab.append(member)
-
+        for user_id in args:
+            id_member = int(user_id[3:len(user_id) - 1])
+            member = ctx.guild.get_member(id_member)
+            member_tab.append(member)
+        member_tab.append(ctx.author)
         members_current_channel = ctx.author.voice.channel.members
         for member in members_current_channel:
             if member not in member_tab:
-                await member.edit(mute=True)
+                await member.edit(mute=False)
     else:
         #Ejecter du salon vocal
         await ctx.author.edit(voice_channel=None)
@@ -99,12 +89,12 @@ async def muteAll(ctx, *args):
 @bot.command()
 async def unmuteAll(ctx, *args):
     if ctx.author.guild_permissions.mute_members:
+        #Membre a ne pas mute
         member_tab = []
-        for member_id in args:
-            if len(member_id) == 22:
-                id_member = int(member_id[3:21])
-                member = ctx.guild.get_member(id_member)
-                member_tab.append(member)
+        for user_id in args:
+            id_member = int(user_id[3:len(user_id) - 1])
+            member = ctx.guild.get_member(id_member)
+            member_tab.append(member)
 
         members_current_channel = ctx.author.voice.channel.members
         # ajoute l'utilisateur dans les membres a mute
